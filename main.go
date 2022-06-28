@@ -9,9 +9,14 @@ import (
 	"strings"
 )
 
+type Broadcast struct {
+	client  *Client
+	message []byte
+}
+
 type ClientManager struct {
 	clients    map[*Client]bool
-	broadcast  chan []byte
+	broadcast  chan Broadcast
 	register   chan *Client
 	unregister chan *Client
 }
@@ -28,18 +33,16 @@ func (manager *ClientManager) start() {
 			manager.clients[connection] = true
 			fmt.Println(connection.socket.RemoteAddr(), "joined!")
 		case connection := <-manager.unregister:
-			if _, ok := manager.clients[connection]; ok {
+			if ok := manager.clients[connection]; ok {
 				close(connection.data)
 				delete(manager.clients, connection)
-				fmt.Println("A connection has terminated!")
+				fmt.Println(connection.socket.RemoteAddr(), "left!")
 			}
-		case message := <-manager.broadcast:
+		case broadcast := <-manager.broadcast:
 			for connection := range manager.clients {
-				select {
-				case connection.data <- message:
-				default:
-					close(connection.data)
-					delete(manager.clients, connection)
+				if connection != broadcast.client {
+					msg := fmt.Sprintf("%s: %s\n", broadcast.client.socket.RemoteAddr(), string(broadcast.message))
+					connection.socket.Write([]byte(msg))
 				}
 			}
 		}
@@ -52,13 +55,14 @@ func (manager *ClientManager) receive(client *Client) {
 		length, err := client.socket.Read(message)
 		if err != nil {
 			manager.unregister <- client
+			manager.broadcast <- Broadcast{client, []byte("left!")}
 			client.socket.Close()
 			break
 		}
 		if length > 0 {
 			fmt.Println(client.socket.RemoteAddr(), ": "+string(message))
-			// manager.broadcast <- message
-			manager.sendAll(client, message)
+			manager.broadcast <- Broadcast{client, message}
+			// manager.sendAll(client, message)
 		}
 	}
 }
@@ -69,6 +73,9 @@ func (manager *ClientManager) send(client *Client) {
 		reader := bufio.NewReader(os.Stdin)
 		message, _ := reader.ReadString('\n')
 
+		if len(manager.clients) == 0 {
+			fmt.Println("No participants present here!")
+		}
 		for connection := range manager.clients {
 			msg := fmt.Sprintf("%s: %s", connection.socket.LocalAddr(), message)
 			connection.socket.Write([]byte(msg))
@@ -107,7 +114,7 @@ func startServerMode() {
 	}
 	manager := ClientManager{
 		clients:    make(map[*Client]bool),
-		broadcast:  make(chan []byte),
+		broadcast:  make(chan Broadcast),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
 	}
@@ -119,6 +126,7 @@ func startServerMode() {
 		}
 		client := &Client{socket: connection, data: make(chan []byte)}
 		manager.register <- client
+		manager.broadcast <- Broadcast{client, []byte("joined!")}
 		go manager.receive(client)
 		go manager.send(client)
 	}
