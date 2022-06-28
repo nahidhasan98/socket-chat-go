@@ -62,7 +62,6 @@ func (manager *ClientManager) receive(client *Client) {
 		if length > 0 {
 			fmt.Println(client.socket.RemoteAddr(), ": "+string(message))
 			manager.broadcast <- Broadcast{client, message}
-			// manager.sendAll(client, message)
 		}
 	}
 }
@@ -78,15 +77,6 @@ func (manager *ClientManager) send(client *Client) {
 		}
 		for connection := range manager.clients {
 			msg := fmt.Sprintf("%s: %s", connection.socket.LocalAddr(), message)
-			connection.socket.Write([]byte(msg))
-		}
-	}
-}
-
-func (manager *ClientManager) sendAll(client *Client, message []byte) {
-	for connection := range manager.clients {
-		if connection != client {
-			msg := fmt.Sprintf("%s: %s", client.socket.RemoteAddr(), string(message))
 			connection.socket.Write([]byte(msg))
 		}
 	}
