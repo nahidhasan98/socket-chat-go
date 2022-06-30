@@ -1,0 +1,90 @@
+* {
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: #b6b9c8;
+    background-color: #122033;
+}
+
+.container {
+    width: 50%;
+}
+
+.headerText {
+    text-align: center;
+    padding: 12px 6px;
+}
+
+pre {
+    background: snow;
+    height: 90vh;
+    border-radius: 3px;
+    position: relative;
+    padding: 5px;
+}
+
+form {
+    padding: 12px 6px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+    height: 160px;
+    background: #fff;
+}
+
+#input {
+    width: 85%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    font-size: 18px;
+    line-height: 20px;
+    padding: 6px 8px;
+    border-radius: 3px;
+    resize: none;
+    height: 160px;
+}
+
+.btn {
+    border: 1px solid #355e97;
+    background: #355e97;
+    padding: 8px 16px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #1b2f4b;
+}
+
+.btnSend,
+.btnCancel {
+    position: absolute;
+    width: 12%;
+    right: 1.5%;
+}
+
+.btnSend {
+    top: 8px;
+}
+
+.btnCancel {
+    bottom: 8px;
+    border: 1px solid #d75f70;
+    color: #d75f70;
+    background: #fff;
+}
+
+.btnCancel:hover {
+    color: #fff;
+    background: #d75f70;
+}

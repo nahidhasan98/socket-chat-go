@@ -2,11 +2,13 @@ package main
 
 import (
 	"bufio"
-	"flag"
 	"fmt"
 	"net"
+	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Broadcast struct {
@@ -33,7 +35,7 @@ func (manager *ClientManager) start() {
 			manager.clients[connection] = true
 			fmt.Println(connection.socket.RemoteAddr(), "joined!")
 		case connection := <-manager.unregister:
-			if ok := manager.clients[connection]; ok {
+			if _, ok := manager.clients[connection]; ok {
 				close(connection.data)
 				delete(manager.clients, connection)
 				fmt.Println(connection.socket.RemoteAddr(), "left!")
@@ -138,11 +140,29 @@ func startClientMode() {
 }
 
 func main() {
-	flagMode := flag.String("mode", "server", "start in client or server mode")
-	flag.Parse()
-	if strings.ToLower(*flagMode) == "server" {
-		startServerMode()
-	} else {
-		startClientMode()
-	}
+	// flagMode := flag.String("mode", "server", "start in client or server mode")
+	// flag.Parse()
+	// if strings.ToLower(*flagMode) == "server" {
+	// 	startServerMode()
+	// } else {
+	// 	startClientMode()
+	// }
+
+	gin.SetMode(gin.DebugMode)
+
+	r := gin.Default()
+
+	r.LoadHTMLGlob("view/*")
+	r.Static("/assets", "./assets")
+
+	r.GET("/", index)
+
+	r.Run(":6001")
+	fmt.Println("Server running on port 6001...")
+}
+
+func index(c *gin.Context) {
+	c.HTML(http.StatusOK, "index.html", gin.H{
+		"Title": "Public Chat Room",
+	})
 }
