@@ -24,14 +24,19 @@
 
 <body>
     <div class="container">
-        <h2 class="headerText">The quick brown fox jumps over the lazy dog.</h2>
-        <pre id="output">
-        <form action="">
-            <textarea id="input" name="input" cols="50" required></textarea>
-            <button type="button" class="btn btnCancel">Cancel</button>
-            <input type="submit" value="Send" class="btn btnSend">
-        </form>
-      </pre>
+        <h2 class="headerText">The quick brown fox...</h2>
+        <div class="chatSection">
+            <pre></pre>
+            <form action="">
+                <div class="inputSection">
+                    <textarea id="message" name="message" placeholder="Type your message here" required></textarea>
+                </div>
+                <div class="buttonSection">
+                    <input type="submit" value="Send" class="btn btnSend">
+                    <button type="button" class="btn btnClear">Clear</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- scripts -->

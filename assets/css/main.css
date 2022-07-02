@@ -13,7 +13,7 @@ body {
 }
 
 .container {
-    width: 50%;
+    width: 40%;
 }
 
 .headerText {
@@ -21,70 +21,159 @@ body {
     padding: 12px 6px;
 }
 
-pre {
-    background: snow;
-    height: 90vh;
+.chatSection {
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 78% 22%;
+    background: #fff;
     border-radius: 3px;
-    position: relative;
+    overflow: hidden;
+    min-height: calc(100vh - 44px);
+    /* google, safari */
+    min-height: -webkit-calc(100vh - 44px);
+    /* firefox */
+    min-height: -moz-calc(100vh - 44px);
+    /* opera */
+    min-height: -o-calc(100% - 44px);
+}
+
+pre {
+    background: #f6f6f6;
+    width: 100%;
+    border-radius: 3px;
     padding: 5px;
 }
 
 form {
-    padding: 12px 6px;
-    position: absolute;
-    bottom: 0;
+    display: grid;
+    grid-template-columns: 80% 20%;
     width: 100%;
-    overflow: hidden;
-    height: 160px;
-    background: #fff;
+    background: lightsteelblue;
+    border-radius: 3px;
 }
 
-#input {
-    width: 85%;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    font-size: 18px;
-    line-height: 20px;
-    padding: 6px 8px;
+.inputSection {
+    width: 100%;
     border-radius: 3px;
+    border: 1px solid #a1bade;
+    display: grid;
+    align-items: center;
+    background: snow;
+}
+
+textarea {
+    width: 100%;
+    height: 96%;
+    font-size: 16px;
+    line-height: 18px;
+    padding: 3px 8px;
+    border-radius: 6px;
     resize: none;
-    height: 160px;
+    border: 0;
+    outline: none;
+    cursor: auto;
+    background: snow;
+}
+
+textarea::-webkit-scrollbar {
+    width: 12px;
+}
+
+textarea::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+}
+
+textarea::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.buttonSection {
+    width: 100%;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    justify-items: center;
 }
 
 .btn {
     border: 1px solid #355e97;
     background: #355e97;
-    padding: 8px 16px;
+    padding: 6px 8px;
     border-radius: 3px;
     color: #fff;
     font-size: 16px;
     cursor: pointer;
+    width: 80px;
+    height: 32px;
 }
 
 .btn:hover {
     background: #1b2f4b;
 }
 
-.btnSend,
-.btnCancel {
-    position: absolute;
-    width: 12%;
-    right: 1.5%;
-}
-
 .btnSend {
-    top: 8px;
+    margin-top: -10px;
 }
 
-.btnCancel {
-    bottom: 8px;
+.btnClear {
     border: 1px solid #d75f70;
     color: #d75f70;
     background: #fff;
+    margin-top: 10px;
 }
 
-.btnCancel:hover {
+.btnClear:hover {
     color: #fff;
     background: #d75f70;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .container {
+        width: 98%;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: 75% 25%;
+    }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+    .container {
+        width: 80%;
+    }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    .container {
+        width: 60%;
+    }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .container {
+        width: 50%;
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+    .container {
+        width: 40%;
+    }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1600px) {
+    .container {
+        width: 35%;
+    }
 }
