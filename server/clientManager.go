@@ -12,7 +12,7 @@ type ClientManager struct {
 	Unregister chan *client.Client
 }
 
-func (cm *ClientManager) manage() {
+func (cm *ClientManager) Manage() {
 	for {
 		select {
 		case connection := <-cm.Register:

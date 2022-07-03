@@ -46,6 +46,7 @@ func index(c *gin.Context) {
 }
 
 func webSocket(c *gin.Context) {
+	fmt.Println("inside socket")
 	upgrader.CheckOrigin = func(r *http.Request) bool {
 		return true
 	}
@@ -56,11 +57,24 @@ func webSocket(c *gin.Context) {
 		return
 	}
 
+	cl := &client.Client{
+		WS: ws,
+	}
+	cm := &server.ClientManager{
+		Clients:    make(map[*client.Client]bool),
+		Register:   make(chan *client.Client),
+		Unregister: make(chan *client.Client),
+	}
+	go cm.Manage()
+
 	dm := &server.DataManager{
-		Client: &client.Client{
-			WS: ws,
-		},
+		Client:  cl,
 		Message: nil,
 	}
-	dm.Receive(&server.ClientManager{})
+	err = ws.WriteMessage(1, []byte("Hi Client!"))
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	go dm.Receive(cm)
 }

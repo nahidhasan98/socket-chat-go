@@ -21,7 +21,7 @@ func (dm *DataManager) Receive(cm *ClientManager) {
 			cm.Unregister <- dm.Client
 			dm.Message = []byte("left!")
 			dm.broadcast(cm)
-			dm.Client.Socket.Close()
+			dm.Client.WS.Close()
 			break
 		}
 		// print out that message for clarity

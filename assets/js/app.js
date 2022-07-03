@@ -11,7 +11,7 @@ $(document).ready(() => {
         }
     });
 
-    let socket = new WebSocket("ws://127.0.0.1:6001/ws");
+    let socket = new WebSocket("ws://" + location.host + "/ws");
     console.log("Attempting Connection...");
 
     socket.onopen = () => {
@@ -19,12 +19,12 @@ $(document).ready(() => {
         socket.send("Hi From the Client!")
     };
 
-    socket.onclose = event => {
+    socket.onclose = (event) => {
         console.log("Socket Closed Connection: ", event);
         socket.send("Client Closed!")
     };
 
-    socket.onerror = error => {
+    socket.onerror = (error) => {
         console.log("Socket Error: ", error);
     };
 });

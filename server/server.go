@@ -20,7 +20,7 @@ func StartNewServer() {
 		Register:   make(chan *client.Client),
 		Unregister: make(chan *client.Client),
 	}
-	go cm.manage()
+	go cm.Manage()
 
 	for {
 		connection, _ := listener.Accept()
