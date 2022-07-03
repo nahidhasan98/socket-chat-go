@@ -28,3 +28,13 @@ $(document).ready(() => {
         console.log("Socket Error: ", error);
     };
 });
+
+/* nginx reverse proxy setup for ws
+location /ws {
+    proxy_pass http://localhost:6001;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_read_timeout 86400;
+}
+*/
