@@ -7,35 +7,36 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"github.com/nahidhasan98/socket-chat-go/client"
+	"github.com/nahidhasan98/socket-chat-go/manager"
 	"github.com/nahidhasan98/socket-chat-go/server"
 )
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  4096,
-	WriteBufferSize: 4096,
+var cm = &manager.ClientManager{
+	Clients:    make(map[*manager.Client]bool),
+	Register:   make(chan *manager.Client),
+	Unregister: make(chan *manager.Client),
+}
+
+func checkError(err error) {
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func main() {
-	// flagMode := flag.String("mode", "server", "start in client or server mode")
-	// flag.Parse()
-	// if strings.ToLower(*flagMode) == "server" {
-	// 	server.StartNewServer()
-	// } else {
-	// 	client.StartNewClient()
-	// }
+	go cm.Manage()
 
 	gin.SetMode(gin.DebugMode)
 
-	r := gin.Default()
+	router := gin.Default()
 
-	r.LoadHTMLGlob("view/*")
-	r.Static("/assets", "./assets")
+	router.LoadHTMLGlob("view/*")
+	router.Static("/assets", "./assets")
 
-	r.GET("/", index)
-	r.GET("/ws", webSocket)
+	router.GET("/", index)
+	router.GET("/ws", webSocket)
 
-	r.Run(":6001")
+	router.Run(":6001")
 	fmt.Println("Server running on port 6001...")
 }
 
@@ -46,35 +47,17 @@ func index(c *gin.Context) {
 }
 
 func webSocket(c *gin.Context) {
-	fmt.Println("inside socket")
+	var upgrader = websocket.Upgrader{
+		ReadBufferSize:  4096,
+		WriteBufferSize: 4096,
+	}
+
 	upgrader.CheckOrigin = func(r *http.Request) bool {
 		return true
 	}
 
 	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	checkError(err)
 
-	cl := &client.Client{
-		WS: ws,
-	}
-	cm := &server.ClientManager{
-		Clients:    make(map[*client.Client]bool),
-		Register:   make(chan *client.Client),
-		Unregister: make(chan *client.Client),
-	}
-	go cm.Manage()
-
-	dm := &server.DataManager{
-		Client:  cl,
-		Message: nil,
-	}
-	err = ws.WriteMessage(1, []byte("Hi Client!"))
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	go dm.Receive(cm)
+	server.StartNewServer(ws, cm)
 }

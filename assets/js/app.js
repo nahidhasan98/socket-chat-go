@@ -19,6 +19,11 @@ $(document).ready(() => {
         socket.send("Hi From the Client!")
     };
 
+    socket.onmessage = (event) => {
+        // console.log(event);
+        $('pre').append(event.data)
+    }
+
     socket.onclose = (event) => {
         console.log("Socket Closed Connection: ", event);
         socket.send("Client Closed!")
