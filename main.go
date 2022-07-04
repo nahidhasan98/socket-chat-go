@@ -8,14 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/nahidhasan98/socket-chat-go/manager"
-	"github.com/nahidhasan98/socket-chat-go/server"
 )
 
-var cm = &manager.ClientManager{
-	Clients:    make(map[*manager.Client]bool),
-	Register:   make(chan *manager.Client),
-	Unregister: make(chan *manager.Client),
-}
+var cm *manager.ClientManager
 
 func checkError(err error) {
 	if err != nil {
@@ -24,6 +19,7 @@ func checkError(err error) {
 }
 
 func main() {
+	cm = manager.NewManager()
 	go cm.Manage()
 
 	gin.SetMode(gin.DebugMode)
@@ -59,5 +55,11 @@ func webSocket(c *gin.Context) {
 	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	checkError(err)
 
-	server.StartNewServer(ws, cm)
+	cl := &manager.Client{WebSocket: ws}
+	cm.Register <- cl
+
+	dm := manager.DataManager{Client: cl}
+
+	go dm.Receive(cm)
+	go dm.Send(cm)
 }

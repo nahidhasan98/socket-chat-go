@@ -16,11 +16,12 @@ func (dm *DataManager) Receive(cm *ClientManager) {
 		messageType, p, err := dm.Client.WebSocket.ReadMessage()
 		if err != nil {
 			cm.Unregister <- dm.Client
-			dm.Message = []byte("left!")
 			dm.Client.WebSocket.Close()
+			break
 		}
+		dm.Message = p
 		// print out that message for clarity
-		fmt.Println(28, messageType, string(p))
+		fmt.Println(dm.Client.WebSocket.RemoteAddr(), string(p))
 		dm.Broadcast(messageType, cm)
 	}
 }
@@ -36,14 +37,13 @@ func (dm *DataManager) Send(cm *ClientManager) {
 		}
 
 		for connection := range cm.Clients {
-			msg := fmt.Sprintf("%s: %s", connection.WebSocket.LocalAddr(), message)
+			msg := fmt.Sprintf("Server: %s", message)
 			connection.WebSocket.WriteMessage(1, []byte(msg))
 		}
 	}
 }
 
 func (dm *DataManager) Broadcast(messageType int, cm *ClientManager) {
-	fmt.Println(len(cm.Clients))
 	for connection := range cm.Clients {
 		if connection != dm.Client {
 			msg := fmt.Sprintf("%s: %s\n", dm.Client.WebSocket.RemoteAddr(), string(dm.Message))

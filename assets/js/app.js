@@ -5,10 +5,15 @@ $(document).ready(() => {
         if (event.shiftKey && event.keyCode == 13) {
             console.log("shift+enter pressed");
         } else if (event.keyCode == 13) {
-            console.log($('#message').val().trim());
+            let msg = $('#message').val().trim();
             $('#message').val("");
-            //submit
+            socket.send(msg);
+            $("form").trigger("submit");    // reduce btton click for select file
         }
+    });
+
+    $("form").on("submit", () => {
+        return false;
     });
 
     let socket = new WebSocket("ws://" + location.host + "/ws");
