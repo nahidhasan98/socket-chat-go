@@ -21,7 +21,7 @@ func (dm *DataManager) Receive(cm *ClientManager) {
 		}
 		dm.Message = p
 		// print out that message for clarity
-		fmt.Println(dm.Client.WebSocket.RemoteAddr(), string(p))
+		fmt.Println(dm.Client.WebSocket.LocalAddr(), string(p))
 		dm.Broadcast(messageType, cm)
 	}
 }
