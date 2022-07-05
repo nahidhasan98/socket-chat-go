@@ -43,6 +43,7 @@ func index(c *gin.Context) {
 }
 
 func webSocket(c *gin.Context) {
+	fmt.Println("46#", c.Request.RemoteAddr)
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  4096,
 		WriteBufferSize: 4096,
@@ -62,4 +63,5 @@ func webSocket(c *gin.Context) {
 
 	go dm.Receive(cm)
 	go dm.Send(cm)
+	fmt.Println("66#", dm.Client.WebSocket.LocalAddr(), "#", dm.Client.WebSocket.RemoteAddr())
 }
