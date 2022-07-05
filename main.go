@@ -32,7 +32,7 @@ func main() {
 	router.GET("/", index)
 	router.GET("/ws", webSocket)
 
-	router.Run(":6001")
+	router.Run(":7001")
 	fmt.Println("Server running on port 6001...")
 }
 
